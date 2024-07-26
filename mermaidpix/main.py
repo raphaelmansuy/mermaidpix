@@ -7,28 +7,71 @@ import logging
 import time
 import shutil
 
-def setup_logging(verbose):
+from typing import Optional
+
+
+
+def setup_logging(verbose: bool) -> None:
+    """
+    Set up logging configuration.
+
+    Args:
+        verbose (bool): If True, set the logging level to DEBUG. If False, set it to INFO.
+
+    Returns:
+        None
+    """
     level = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(level=level, format="%(asctime)s - %(levelname)s - %(message)s")
 
-def check_mermaid_cli():
+def check_mermaid_cli() -> bool:
+    """
+    Checks if Mermaid CLI (mmdc) is installed and in the system PATH.
+
+    Returns:
+        bool: True if Mermaid CLI is installed, False otherwise.
+    """
     if shutil.which("mmdc") is None:
-        print("Mermaid CLI (mmdc) is not installed or not in the system PATH.")
-        print("To install Mermaid CLI, follow these steps:")
-        print("1. Ensure you have Node.js installed (https://nodejs.org/)")
-        print("2. Run the following command:")
-        print("   npm install -g @mermaid-js/mermaid-cli")
-        print("3. After installation, restart your terminal or command prompt.")
-        print("For more information, visit: https://github.com/mermaid-js/mermaid-cli")
+        logging.error("Mermaid CLI (mmdc) is not installed or not in the system PATH.")
+        logging.info("To install Mermaid CLI, follow these steps:")
+        logging.info("1. Ensure you have Node.js installed (https://nodejs.org/)")
+        logging.info("2. Run the following command:")
+        logging.info("   npm install -g @mermaid-js/mermaid-cli")
+        logging.info("3. After installation, restart your terminal or command prompt.")
+        logging.info("For more information, visit: https://github.com/mermaid-js/mermaid-cli")
         return False
     return True
 
-def get_deterministic_filename(mermaid_code):
+
+
+def get_deterministic_filename(mermaid_code: str) -> str:
+    """
+    Generates a deterministic filename for a given Mermaid code.
+
+    Args:
+        mermaid_code (str): The Mermaid code for which the filename is generated.
+
+    Returns:
+        str: The deterministic filename in the format 'mermaid_{hash}.png', where
+             'hash' is the first 16 characters of the MD5 hash of the Mermaid code.
+
+    """
     hash_object = hashlib.md5(mermaid_code.encode())
     hash_hex = hash_object.hexdigest()
     return f"mermaid_{hash_hex[:16]}.png"
 
-def convert_mermaid_to_png(mermaid_code, output_dir, dpi=300):
+def convert_mermaid_to_png(mermaid_code: str, output_dir: str, dpi: int = 300) -> Optional[str]:
+    """
+    Converts a Mermaid diagram code to a PNG image.
+
+    Args:
+        mermaid_code (str): The Mermaid diagram code to convert.
+        output_dir (str): The directory where the PNG image will be saved.
+        dpi (int, optional): The DPI (dots per inch) of the output image. Defaults to 300.
+
+    Returns:
+        Optional[str]: The filename of the converted PNG image if successful, None otherwise.
+    """
     filename = get_deterministic_filename(mermaid_code)
     output_path = os.path.join(output_dir, filename)
 
@@ -81,13 +124,13 @@ def convert_mermaid_to_png(mermaid_code, output_dir, dpi=300):
 
     return filename
 
-def process_markdown_file(input_file, output_file, image_dir):
+def process_markdown_file(input_file: str, output_file: str, image_dir: str) -> None:
     with open(input_file, "r") as f:
         content = f.read()
 
     os.makedirs(image_dir, exist_ok=True)
 
-    def replace_mermaid(match):
+    def replace_mermaid(match: re.Match) -> str:
         mermaid_code = match.group(1)
         logging.debug(f"Processing Mermaid diagram:\n{mermaid_code}")
         image_filename = convert_mermaid_to_png(mermaid_code, image_dir)
@@ -103,7 +146,7 @@ def process_markdown_file(input_file, output_file, image_dir):
     with open(output_file, "w") as f:
         f.write(new_content)
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="MermaidPix: Convert Mermaid diagrams in Markdown to high-res PNG images")
     parser.add_argument("input_file", help="Input Markdown file")
     parser.add_argument("output_file", help="Output Markdown file")
