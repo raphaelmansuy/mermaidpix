@@ -116,13 +116,13 @@ Input Markdown (`input.md`):
 
 Here's our current system architecture:
 
-```mermaid
+
 graph TD
     A[Client] -->|HTTP Request| B(Load Balancer)
     B -->|Forward| C{Web Server}
     C -->|Query| D[(Database)]
     C -->|Cache| E((Redis))
-```
+
 
 This diagram shows the basic flow of our system.
 ```
