@@ -1,3 +1,7 @@
+"""
+This module provides functions to process markdown files and convert Mermaid diagrams to PNG images.
+"""
+
 import os
 import subprocess
 import hashlib
@@ -42,6 +46,7 @@ def convert_mermaid_to_png(
         return filename
 
     temp_file = f"temp_{hashlib.md5(mermaid_code.encode()).hexdigest()[:8]}.mmd"
+
     with open(temp_file, "w", encoding="utf-8") as f:  # Specify encoding
         f.write(mermaid_code)
 
@@ -52,20 +57,13 @@ def convert_mermaid_to_png(
         process = subprocess.Popen(
             [
                 "mmdc",
-                "-i",
-                temp_file,
-                "-o",
-                output_path,
-                "-b",
-                "transparent",
-                "-w",
-                "3840",
-                "-H",
-                "2160",  # 4K resolution
-                "-s",
-                "4",  # Scale factor
-                "-d",  # DPI option
-                str(dpi),  # Use the dpi argument
+                "-i", temp_file,
+                "-o", output_path,
+                "-b", "transparent",
+                "-w", "3840",
+                "-H", "2160",  # 4K resolution
+                "-s", "4",     # Scale factor
+                "-d", str(dpi) # Use the dpi argument
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -73,9 +71,8 @@ def convert_mermaid_to_png(
         )
 
         stdout, stderr = process.communicate(timeout=60)  # 60 seconds timeout
-        logging.info(
-            "Process output: %s", stdout
-        )  # Log the stdout using lazy formatting
+
+        logging.info("Process output: %s", stdout)  # Log the stdout using lazy formatting
 
         if process.returncode != 0:
             logging.error("Error converting Mermaid to PNG: %s", stderr)
@@ -88,10 +85,11 @@ def convert_mermaid_to_png(
         logging.error("Mermaid conversion timed out after 60 seconds")
         process.kill()
         return None
-    # pylint: disable=broad-exception-caught
+
     except Exception as e:
         logging.error("Unexpected error during Mermaid conversion: %s", str(e))
         return None
+
     finally:
         if os.path.exists(temp_file):
             os.remove(temp_file)
