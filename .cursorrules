@@ -1,0 +1,102 @@
+## Python Coding Guidelines
+
+- **Python Version**: Use 3.11.x
+- **Dependency Management**: Use Poetry (`pyproject.toml`)
+- **Testing**: Use PyTest in `tests/`
+- **IDE**: VSCode
+- **Code Formatting**: Black
+- **Linting**: Flake8
+- **Static Type Checking**: Pyright
+- **Data Validation**: Pydantic 2.9.x
+- **Web Framework**: FastAPI
+- **ORM**: SQLAlchemy
+- **Database Migrations**: Alembic
+- **CLI**: Click 8.1.x
+- **Logging**: Loguru
+- **Configuration**: PyYAML
+- **Environment Management**: Poetry
+- **Documentation**: Sphinx
+- **Deployment**: Docker
+- **CI/CD**: GitHub Actions
+
+## Code Style
+
+- Use snake case for identifiers; kebab case for filenames.
+- Use f-strings for formatting; triple quotes for multi-line strings.
+- Apply type hints for all functions, variables, class attributes, and parameters.
+- Prefer `pydantic` models over dictionaries for data validation.
+- Prefer composition over inheritance.
+- Follow the single source of truth principle. Kiss (Keep It Simple Stupid) principle.
+- Use enums for constants.
+- Use type guards to validate data types.
+
+## Project Structure
+
+```
+├── pyproject.toml
+├── poetry.lock
+├── medium_publish/
+│       ├── __init__.py
+│       └── main.py
+└── tests/
+    ├── __init__.py
+    └── test_main.py
+```
+
+## Coding Standards
+
+- **PEP 8**: Follow for style (max 79 chars, spaces around operators, use `f-strings`).
+- **Docstrings**: Required for all public functions/classes.
+- **Logging**: Use `logging.info` for information, `logging.warning` for warnings, and `logging.error` for errors.
+- Use lazy formatting for logging.
+
+## Testing Practices
+
+- **Independence**: Tests should not rely on external systems.
+- **Coverage**: Aim for high coverage; use fixtures for setup.
+
+## Output Format
+
+Use markdown to provide your response.
+
+After the question, provide the following information:
+
+<reflexion>
+  -0) Rephrase the problem in your own words. Even if you think you understand the problem, rephrasing it will help you understand it better.
+
+    - If the problem is complex, break it down into smaller problems. You will use Chain of Tought and System 2 Thinking.
+
+    - Evaluate if you have enough information to solve the problem. 
+
+    - If not search in the code source code to find information or search in the Internet to find information.
+
+    - If you find information ask the user if you can use the information.
+
+    - Create a business rules tables with the following columns: BR Id, BR Description, BR Status (TODO, DOING, DONE) if needed.
+
+    - Evaluate the edge cases of the problem.
+
+    - Evaluate the time and space complexity of the problem.
+
+    - Evaluate the constraints of the problem.
+
+ - 1) Analyze the problem and provide a reflexion on the problem and the possibles solutions you are going to provide. Simulate the solution to verify the hypothesis. 
+ - 2) Propose different solutions and explain the trade-offs of each solution. Use pros and cons to explain the trade-offs of each solution.
+ - 3) Explain why you chose the solution you are going to implement
+ - 4) Simulate the implementation of the solution you are going to implement and explain the trade-offs of the solution.
+ - 5) Compare each solution and explain why you chose the solution you are going to implement.
+ - 6) Give the list of files you are going to create,delete or modify: Format as a table: column file, column action (create, delete, modify), column file path
+ 
+ Format your response using markdown.
+
+</reflexion>
+
+Stop and ask the user to confirm if the reflexion is correct, ask the permission to continue with the task <write_code>.
+
+Ask a question to the user to confirm if the reflexion is correct. And the continue with the task <write_code>.
+
+<write_code>
+- Write the code.
+
+Format you response using markdown.
+</write_code>
