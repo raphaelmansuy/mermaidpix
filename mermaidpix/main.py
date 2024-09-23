@@ -119,6 +119,7 @@ def convert_mermaid_to_png(
         )
 
         stdout, stderr = process.communicate(timeout=60)  # 60 seconds timeout
+        logging.info("Process output: %s", stdout)  # Log the stdout using lazy formatting
 
         if process.returncode != 0:
             logging.error("Error converting Mermaid to PNG: %s", stderr)
@@ -184,7 +185,10 @@ def main() -> None:
     )
     parser.add_argument("input_file", help="Input Markdown file")
     parser.add_argument("output_file", help="Output Markdown file")
-    parser.add_argument("image_dir", help="Directory to store generated images")
+    parser.add_argument("image_dir", nargs='?', default="asset", help="Directory to store generated images (default: 'asset')")
+    parser.add_argument(
+        "-o", "--output", help="Output Markdown file (overwrites the existing file)"
+    )
     parser.add_argument(
         "-v", "--verbose", action="store_true", help="Enable verbose logging"
     )
@@ -200,8 +204,15 @@ def main() -> None:
             raise FileNotFoundError(f"Input file not found: {args.input_file}")
 
         logging.info("Processing input file: %s", args.input_file)
-        process_markdown_file(args.input_file, args.output_file, args.image_dir)
-        logging.info("Processing complete. Output written to %s", args.output_file)
+        
+        # Use the --output argument if provided, otherwise use the positional output_file
+        output_file = args.output if args.output else args.output_file
+        
+        # Ensure the image directory exists
+        os.makedirs(args.image_dir, exist_ok=True)
+        
+        process_markdown_file(args.input_file, output_file, args.image_dir)
+        logging.info("Processing complete. Output written to %s", output_file)
     except FileNotFoundError as e:
         logging.error("%s", str(e))
         exit(1)

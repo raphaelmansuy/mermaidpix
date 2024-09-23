@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mermaidpix"
-version = "0.5.0"
+version = "0.6.0"
 description = "A tool for converting Mermaid diagrams in Markdown to high-res PNG images"
 authors = ["Raphaël MANSUY <raphael.mansuy@gmail.com>"]
 license = "MIT"
