@@ -259,7 +259,7 @@ Many users believe that simply sending queries to AI will yield perfect results 
 To visualize how the IoT framework operates, here's a Mermaid sequence diagram illustrating the interaction between different components during response generation:
 
 
-![Mermaid Diagram](demo/assets/mermaid_6fbff80f75d34147.png)
+![Mermaid Diagram](assets/mermaid_6fbff80f75d34147.png)
 
 
 ### 9. Conclusion

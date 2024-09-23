@@ -2,28 +2,23 @@
 MermaidPix: Convert Mermaid diagrams in Markdown to high-res PNG images
 """
 
-import click  # Import Click instead of argparse
-from mermaidpix.file_processor import (
-    process_markdown_file,
-)  # Ensure this import is correct
+import os
+import click
 
-VERSION = "0.7.1"
+from mermaidpix.file_processor import process_markdown_file
+
+VERSION = "0.7.4"
 
 
 @click.command()  # Define the command
-@click.option(
-    "--image-dir",
-    type=str,
-    default="images",
-    help="Directory where the generated PNG images will be stored. Defaults to 'images'.",
-)
-@click.argument("input_file", type=str, help="Path to the input markdown file.")
-@click.argument(
-    "output_file", type=str, help="Path to save the processed markdown output."
-)
+@click.argument("input_file", type=str)  # Removed help parameter
+@click.argument("output_file", type=str)  # Removed help parameter
 @click.version_option(version=VERSION)  # Version option
-def main(input_file: str, output_file: str, image_dir: str) -> None:
+def main(input_file: str, output_file: str) -> None:
     """Main function to process the markdown file."""
+
+    # Correctly set the image directory to the directory of the output file
+    image_dir = os.path.relpath(os.path.join(os.path.dirname(os.path.abspath(output_file)), "assets"))
     # Call the processing function with the provided arguments
     process_markdown_file(input_file, output_file, image_dir=image_dir)
 

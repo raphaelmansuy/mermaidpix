@@ -9,6 +9,7 @@ import logging
 import time
 from typing import Optional
 
+
 def get_deterministic_filename(mermaid_code: str) -> str:
     """
     Generates a deterministic filename for a given Mermaid code.
@@ -18,11 +19,12 @@ def get_deterministic_filename(mermaid_code: str) -> str:
 
     Returns:
         str: The deterministic filename in the format 'mermaid_{hash}.png', where
-             'hash' is the first 16 characters of the MD5 hash of the Mermaid code.
+              'hash' is the first 16 characters of the MD5 hash of the Mermaid code.
     """
     hash_object = hashlib.md5(mermaid_code.encode())
     hash_hex = hash_object.hexdigest()
     return f"mermaid_{hash_hex[:16]}.png"
+
 
 def convert_mermaid_to_png(
     mermaid_code: str, output_dir: str, dpi: int = 300
@@ -57,22 +59,28 @@ def convert_mermaid_to_png(
         process = subprocess.Popen(
             [
                 "mmdc",
-                "-i", temp_file,
-                "-o", output_path,
-                "-b", "transparent",
-                "-w", "3840",
-                "-H", "2160",  # 4K resolution
-                "-s", "4",     # Scale factor
-                "-d", str(dpi) # Use the dpi argument
-            ],
+                "-i",
+                temp_file,
+                "-o",
+                output_path,
+                "-b",
+                "transparent",
+                "-w",
+                "3840",
+                "-H",
+                "2160",  # 4K resolution
+                "-s",
+                "4",
+            ],  # Scale factor
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
         )
 
         stdout, stderr = process.communicate(timeout=60)  # 60 seconds timeout
-
-        logging.info("Process output: %s", stdout)  # Log the stdout using lazy formatting
+        logging.info(
+            "Process output: %s", stdout
+        )  # Log the stdout using lazy formatting
 
         if process.returncode != 0:
             logging.error("Error converting Mermaid to PNG: %s", stderr)
@@ -86,6 +94,7 @@ def convert_mermaid_to_png(
         process.kill()
         return None
 
+    # pylint: disable=broad-exception-caught
     except Exception as e:
         logging.error("Unexpected error during Mermaid conversion: %s", str(e))
         return None
