@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mermaidpix"
-version = "0.6.0"
+version = "0.7.0"
 description = "A tool for converting Mermaid diagrams in Markdown to high-res PNG images"
 authors = ["Raphaël MANSUY <raphael.mansuy@gmail.com>"]
 license = "MIT"
@@ -8,6 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+click = "^8.1.7"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.1.0"

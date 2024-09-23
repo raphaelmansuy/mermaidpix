@@ -6,10 +6,10 @@ import re
 import subprocess
 import os
 import hashlib
-import argparse
 import logging
 import time
 import shutil
+import click  # Import Click for argument parsing
 
 from typing import Optional
 
@@ -119,7 +119,9 @@ def convert_mermaid_to_png(
         )
 
         stdout, stderr = process.communicate(timeout=60)  # 60 seconds timeout
-        logging.info("Process output: %s", stdout)  # Log the stdout using lazy formatting
+        logging.info(
+            "Process output: %s", stdout
+        )  # Log the stdout using lazy formatting
 
         if process.returncode != 0:
             logging.error("Error converting Mermaid to PNG: %s", stderr)
@@ -175,43 +177,45 @@ def process_markdown_file(input_file: str, output_file: str, image_dir: str) -> 
         f.write(new_content)
 
 
-def main() -> None:
+@click.command()
+@click.argument("input_file")
+@click.argument("output_file")
+@click.option(
+    "--image-dir", default="asset", help="Directory to store generated images (default: 'asset')"
+)
+@click.option(
+    "-o", "--output", help="Output Markdown file (overwrites the existing file)"
+)
+@click.option("-v", "--verbose", is_flag=True, help="Enable verbose logging")
+def main(
+    input_file: str,
+    output_file: str,
+    image_dir: str,
+    output: Optional[str],
+    verbose: bool,
+) -> None:
     """Main entry point for the MermaidPix application.
 
     Converts Mermaid diagrams in Markdown to high-resolution PNG images.
     """
-    parser = argparse.ArgumentParser(
-        description="MermaidPix: Convert Mermaid diagrams in Markdown to high-res PNG images"
-    )
-    parser.add_argument("input_file", help="Input Markdown file")
-    parser.add_argument("output_file", help="Output Markdown file")
-    parser.add_argument("image_dir", nargs='?', default="asset", help="Directory to store generated images (default: 'asset')")
-    parser.add_argument(
-        "-o", "--output", help="Output Markdown file (overwrites the existing file)"
-    )
-    parser.add_argument(
-        "-v", "--verbose", action="store_true", help="Enable verbose logging"
-    )
-    args = parser.parse_args()
-
-    setup_logging(args.verbose)
+    setup_logging(verbose)
 
     if not check_mermaid_cli():
         exit(1)
 
     try:
-        if not os.path.exists(args.input_file):
-            raise FileNotFoundError(f"Input file not found: {args.input_file}")
+        if not os.path.exists(input_file):
+            raise FileNotFoundError(f"Input file not found: {input_file}")
 
-        logging.info("Processing input file: %s", args.input_file)
-        
+        logging.info("Processing input file: %s", input_file)
+
         # Use the --output argument if provided, otherwise use the positional output_file
-        output_file = args.output if args.output else args.output_file
-        
+        output_file = output if output else output_file
+
         # Ensure the image directory exists
-        os.makedirs(args.image_dir, exist_ok=True)
-        
-        process_markdown_file(args.input_file, output_file, args.image_dir)
+        os.makedirs(image_dir, exist_ok=True)
+
+        process_markdown_file(input_file, output_file, image_dir)
         logging.info("Processing complete. Output written to %s", output_file)
     except FileNotFoundError as e:
         logging.error("%s", str(e))
@@ -226,4 +230,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    # Provide the necessary arguments for the main function
     main()
