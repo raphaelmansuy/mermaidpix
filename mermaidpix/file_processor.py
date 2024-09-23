@@ -38,6 +38,13 @@ def process_markdown_file(input_file: str, output_file: str, *, image_dir: str) 
         output_file (str): The path to save the processed output.
         image_dir (str): The directory where images are stored.
     """
+    # Check if the output file already exists
+    if os.path.exists(output_file):
+        overwrite = input(f"The file '{output_file}' already exists. Overwrite? (y/n): ")
+        if overwrite.lower() != 'y':
+            logging.info("Operation cancelled by the user.")
+            return
+
     # Resolve and expand user paths
     input_file = os.path.abspath(os.path.expanduser(input_file))
     output_file = os.path.abspath(os.path.expanduser(output_file))

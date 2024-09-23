@@ -43,10 +43,6 @@ def convert_mermaid_to_png(
     filename = get_deterministic_filename(mermaid_code)
     output_path = os.path.join(output_dir, filename)
 
-    if os.path.exists(output_path):
-        logging.debug("Image already exists, skipping conversion: %s", output_path)
-        return filename
-
     temp_file = f"temp_{hashlib.md5(mermaid_code.encode()).hexdigest()[:8]}.mmd"
 
     with open(temp_file, "w", encoding="utf-8") as f:  # Specify encoding
